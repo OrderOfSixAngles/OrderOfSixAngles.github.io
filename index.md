@@ -74,7 +74,7 @@
 
 [Источник](https://xakep.ru/2017/01/27/mobile-phishing/)
 
-![img](/assets/images/fishing_2.png)
+![img](/assets/images/fishing_2.jpg)
 
 [Источник](https://android.stackexchange.com/questions/106899/what-should-i-do-about-this-pop-up-on-my-android-device)
 
