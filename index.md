@@ -264,14 +264,14 @@ private void sendToServer(String path) {
 </intent-filter>
 {% endhighlight %}
 
-Видим полное имя класса Activity - com.halfbrick.mortar.MortarGameLauncherActivity. Открываем папку с декомплириованными исходниками, ищем там этот класс, открываем его. Он содержит только один метод (помимо самого конструктора):
+Видим полное имя класса Activity - ```com.halfbrick.mortar.MortarGameLauncherActivity```. Открываем папку с декомплириованными исходниками, ищем там этот класс, открываем его. Он содержит только один метод (помимо самого конструктора):
 
 ```smali
 # virtual methods
 .method protected onStart()V
 ```
 
-Далее метод onStart():
+Далее метод ```onStart():```
 ```smali
 # virtual methods
 .method protected onStart()V
@@ -312,3 +312,37 @@ private void sendToServer(String path) {
     return-void
 .end method
 ```
+
+Выяснили, что открывается MortarGameActivity. Открываем его. Смотрим метод ```Oncreate```, так как с него начинается любое активити.
+Куда-то сюда нам надо вставить вызов нашего кода. Вставлять надо так, чтобы сохранить порядок line. Стрелочкой показано, куда будем вставлять
+
+```smali
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 9
+
+    :try_start_0
+    const-string v0, "android.os.AsyncTask"
+
+    .line 465
+    invoke-static {v0}, Ljava/lang/Class;->forName(Ljava/lang/String;)Ljava/lang/Class;
+    :try_end_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
+
+    .line 471
+    :catch_0
+    invoke-super {p0, p1}, Landroid/support/v4/app/FragmentActivity;->onCreate(Landroid/os/Bundle;)V
+    
+	  <------------------------------------------- вставлять будем сюда, как строку 472
+    
+    .line 473
+    invoke-static {}, Lcom/halfbrick/mortar/NativeGameLib;->TryLoadGameLibrary()Z
+
+    .line 475
+    invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameActivity;->getIntent()Landroid/content/Intent;
+```
+
+Куда вставлять нашли, теперь нужен smali код того, что хотим вставить. Собираем в apk наш сканер и декомпилируем. Переносим наши три класса в папку com/halfbrick/mortar (там же, где лежит активити целевая). Меняем им package name с kz.c.signscan на com.halfbrick.mortar. 
+
+(Вставить много красивых картинок! Типа, какой был код и какой стал)
+
+В smali классе MainActivity берем строчку вызова StageAttack->pwn(). Копируем ее и вставляем в MortarGameActivity, в то место, которое мы определили. 
