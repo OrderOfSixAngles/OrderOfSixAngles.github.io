@@ -52,19 +52,17 @@
   
   Чем плохи модификации популярных приложений? Вы никогда не знаете, что они на самом деле делают. К тому же, правительство не упускает возможность и публикуют свои модификации, естественно с инструментами для слежения за пользователем. Приложения с правительственной слежкой являются вредоносными по определению. [Здесь](https://cybershafarat.com/2016/01/20/farsitelegram/) можете почитать, как спалились иранские власти. Цитата оттуда:
   
-*> This looks to be developed to the specifications of the Iranian government enabling them to track every bit and byte put forward by users of the app.  
+> This looks to be developed to the specifications of the Iranian government enabling them to track every bit and byte put forward by users of the app.  
   
   А [Здесь](https://thehackernews.com/2016/11/hacking-android-smartphone.html) спалились китайцы. Цитата:
   
-*> Besides sniffing SMS message content, contact lists, call logs, location data and other personal user information and automatically sending them to AdUps every 72 hours, AdUps' software also has the capability to remotely install and update applications on a smartphone.
+> Besides sniffing SMS message content, contact lists, call logs, location data and other personal user information and automatically sending them to AdUps every 72 hours, AdUps' software also has the capability to remotely install and update applications on a smartphone.
   
   Обычным пользователям защититься от такого практически невозможно, так как другого выбора нет - официальные источники усиленно блокируются, либо приложения предустанавливаются на все ввозимые телефоны. 
   
-  И не сказать, что такие маркеты непопулярны, как вам 260 000 000 пользователей в месяц?
+  И не сказать, что такие маркеты непопулярны, как вам 260 000 000 пользователей в месяц? ([Источник](https://www.appinchina.co/market/app-stores/))
   
   ![image](/assets/images/china_app_stores.png)
-   
-  [Источник](https://www.appinchina.co/market/app-stores/)
   
 ## Фишинг
 Классический фишинг, только вместо загрузки непонятных скриптов или файлов, пользователю предлагают обновить WhatsApp, установить новый улучшенный Instagram и т.д. Пример:
@@ -78,6 +76,7 @@
 [Источник](https://android.stackexchange.com/questions/106899/what-should-i-do-about-this-pop-up-on-my-android-device)
 
 > I then open CHROME BROWSER and type: www.XXXXXXXX.com - within a few seconds I get a popup with this: 
+
 ![img](/assets/images/fishing_3.png)
 
 [Источник](https://www.bleepingcomputer.com/forums/t/576156/android-pop-uphijacker/)
@@ -86,22 +85,23 @@
 
 Пример: @apkdl_bot, t.me/fun_android
 
-  Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вам приложение "на лету". Работает это так, вы вводите команду боту/в группу, что хотите скачать "Instagram". Скрипт на другой стороне скачивает его с Google Play, распаковывает, запихивает свой вредоносный код, запаковывает обратно и возвращает вам. Как это делать, я попытаюсь рассказать в ближайшем будущем.
+  Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вами приложение "на лету". Работает это так - вы вводите команду боту/в группу, что хотите скачать "Instagram". Скрипт на другой стороне скачивает его с Google Play, распаковывает, запихивает свой вредоносный код, запаковывает обратно и возвращает вам. Как это делать автоматически, я попытаюсь рассказать в ближайшем будущем.
 
 ## Сторонние сайты-посредники
  
  Пример: apkpure.com, apkmirror.com
- Тоже самое, что и с телеграм ботами/группами, только добавляется возможность загрузить свое приложение на такой сайт. Как например на этом [сайте](https://www.apkmirror.com/#uploadAPK):
+ 
+ Тоже самое, что и с телеграм ботами/группами, только добавляется возможность загрузить свое приложение на такой сайт. Это в свою очередь только увеличивает вероятность установить вредоносное приложение. Пример загрузки на [этом сайте](https://www.apkmirror.com/#uploadAPK):
  
  ![img](/assets/images/apkmirror_submit.png)
- 
-  Гораздо печальнее, что на такие стороние источники приложений, можно закачать свою apk (фото ApkMirrorSubmitApk) https://www.apkmirror.com/faq/#uploadAPK
+   
+  Один из примеров малвари, которая распостранялась таким образом ([Источник](https://www.cmcm.com/blog/en/security/2015-09-18/799.html)):
   
-  Написать про разграничение разрешений в новом андроиде. И почему read external storage это нормально. А на internet отдельно запрашивать не надо. Разрешения для приложений это очень тонкий вопрос. Запретив точное отслеживание геолокации мы потеряем сотни фитес приложений. 
+  ![img](/assets/images/how_ghost_push_work.jpg)
   
- * ... и даже сам Google play
+## Google play
  
- Гугл плей не в состоянии понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка.
+ Гугл плей не в состоянии понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Поэтому исследователи находят сотнями зараженные приложения, опубликованные в Google Play.
   
   Обычно малварь называется типа google play services и ставит такуюже иконку (https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone/). Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. В телеграме например, если вы поставите аватарку самолетика, то вас сразу заблокируют.
   Да, и даже скачав приложение из официального Google Play, вы можете потерять свое ЭЦП. Злоумышленик может взять официальное приложение Telegram, внедрить туда вредоносный код, и выдать его за Telegram с новым функционалом. Зная, сколько разрешений требует это приложение, вас могут прослушать через микрофон, полностью отследить местоположение и делать снимки с вашей камеры, и вы об этом никогда не узнаете. Злоумышленики также могут взять обычное приложение, назвать его схожим именем (заменить "L" на "I")![image](/assets/images/spoil_name.png) [Источник](https://ti.360.net/blog/articles/stealjob-new-android-malware-used-by-donot-apt-group-en/), использовать ту же иконку и выставить в Google Play. Тем самым вы по ошибке можете скачать не то приложение, которое хотели и оно в свою очередь, сворует все ваши контакты и поставит еще много чего вам на телефон. 
