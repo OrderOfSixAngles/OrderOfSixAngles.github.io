@@ -113,9 +113,13 @@
 
 ### Другие способы
 
-К ним относятся: [установка малвари в сервисах починки телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/), [при пересечении границы](https://www.theguardian.com/world/2019/jul/02/chinese-border-guards-surveillance-app-tourists-phones), *подключение к незнакомому компьютеру по USB, с включенным режимом отладки, получение злоумышленником доступа к вашему гугл аккаунту, и установка приложения на телефон через Google Play. 
+1. [Установка малвари в сервисах починки телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/)
 
-* - с помощью adb, можно устанавливать/удалять любые приложения на телефоне
+2. [При пересечении границы](https://www.theguardian.com/world/2019/jul/02/chinese-border-guards-surveillance-app-tourists-phones)
+
+3. Подключение к незнакомому компьютеру по USB, с включенным режимом отладки. 
+
+4. Получение злоумышленником доступа к вашему гугл аккаунту, и установка приложения на телефон через Google Play. 
 
 ### Вывод
 
