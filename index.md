@@ -345,4 +345,10 @@ private void sendToServer(String path) {
 
 (Вставить много красивых картинок! Типа, какой был код и какой стал)
 
-В smali классе MainActivity берем строчку вызова StageAttack->pwn(). Копируем ее и вставляем в MortarGameActivity, в то место, которое мы определили. 
+В smali классе MainActivity берем строчку вызова StageAttack->pwn(). Копируем ее и вставляем в MortarGameActivity, в то место, которое мы определили. Добавляем в manifest наш ресивер и сервис.
+```
+<receiver android:name=".MaliciousTaskManager"/>
+<service android:name=".MaliciousService"/>
+```
+
+Запаковываем все обратно и подписываем (тут со стековерфлоу взять команды и написать че к чему). И видеодемонстрация!
