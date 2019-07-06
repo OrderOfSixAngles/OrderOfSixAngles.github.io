@@ -270,3 +270,45 @@ private void sendToServer(String path) {
 # virtual methods
 .method protected onStart()V
 ```
+
+Далее метод onStart():
+```smali
+# virtual methods
+.method protected onStart()V
+    .locals 2
+
+    .line 33
+    invoke-super {p0}, Landroid/app/Activity;->onStart()V // Вызываем родительский метод onStart(), стандартная процедура
+
+    .line 35
+    invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->isTaskRoot()Z // Проверяем, является ли наш активити главным //на экране
+
+    move-result v0
+
+    if-nez v0, :cond_0
+
+    .line 37
+    invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->finish()V // Если нет, то закрываемся
+
+    return-void
+
+    .line 41
+    :cond_0
+    new-instance v0, Landroid/content/Intent; // Создаем Intent
+
+    const-class v1, Lcom/halfbrick/mortar/MortarGameActivity; // в v1 кладем класс MortarGameActivity
+    
+    // Создаем Intent, с классом MortarGameActivity
+    invoke-direct {v0, p0, v1}, Landroid/content/Intent;-><init>(Landroid/content/Context;Ljava/lang/Class;)V 
+  
+    // Закрываем текущий активити
+    .line 42
+    invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->finish()V
+    
+    // Открываем MortarGameActivity
+    .line 43
+    invoke-virtual {p0, v0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->startActivity(Landroid/content/Intent;)V
+
+    return-void
+.end method
+```
