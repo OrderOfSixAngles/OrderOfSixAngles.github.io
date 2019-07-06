@@ -263,3 +263,10 @@ private void sendToServer(String path) {
   <category android:name="android.intent.category.LAUNCHER"/>
 </intent-filter>
 {% endhighlight %}
+
+Видим полное имя класса Activity - com.halfbrick.mortar.MortarGameLauncherActivity. Открываем папку с декомплириованными исходниками, ищем там этот класс, открываем его. Он содержит только один метод (помимо самого конструктора):
+
+```smali
+# virtual methods
+.method protected onStart()V
+```
