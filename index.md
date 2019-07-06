@@ -24,13 +24,10 @@
   
 ## Как вредоносное приложение попадет к вам на телефон
 
- * Фишинг, ведущий к загрузке приложения с сервера злоумышленника
- * Телеграм боты/группы (@apkdl_bot, t.me/fun_android, ...)
- * Сторонние сайты-посредники, скачивают с Google Play и передают вам (apkpure.com, apkmirror.com, ...)
  * Google Play
  * Предустановка малвари в сервисах починки телефона, при пересечении на границе, ...
  
-## Cторонние маркеты приложений Китая, Ирана и т.д
+## Локальные маркеты приложений Китая, Ирана и т.д
  
   Примеры: cafebazaar.ir, android.myapp.com, apkplz.net
   
@@ -52,6 +49,8 @@
   
   ![image](/assets/images/iran_telegrams.png)
   
+  [Источник](https://cafebazaar.ir)
+  
   Чем плохи модификации популярных приложений? Вы никогда не знаете, что они на самом деле делают. К тому же, правительство не упускает возможность и публикуют свои модификации, естественно с инструментами для слежения за пользователем. Приложения с правительственной слежкой являются вредоносными по определению. [Здесь](https://cybershafarat.com/2016/01/20/farsitelegram/) можете почитать, как спалились иранские власти. Цитата оттуда:
   
 > *This looks to be developed to the specifications of the Iranian government enabling them to track every bit and byte put forward by users of the app.  
@@ -65,14 +64,38 @@
   И не сказать, что такие маркеты непопулярны, как вам 260 000 000 пользователей в месяц?
   
   ![image](/assets/images/china_app_stores.png)
+   
+  [Источник](https://www.appinchina.co/market/app-stores/)
   
- 
 ## Фишинг
 Классический фишинг, только вместо загрузки непонятных скриптов или файлов, пользователю предлагают обновить WhatsApp, установить новый улучшенный Instagram и т.д. Пример:
 
 ![img](/assets/images/whatsapp_fishing.png)
+
 [Источник](https://xakep.ru/2017/01/27/mobile-phishing/)
 
+![img](/assets/images/fishing_2.png)
+
+[Источник](https://android.stackexchange.com/questions/106899/what-should-i-do-about-this-pop-up-on-my-android-device)
+
+> I then open CHROME BROWSER and type: www.XXXXXXXX.com - within a few seconds I get a popup with this: 
+![img](/assets/images/fishing_3.png)
+
+[Источник](https://www.bleepingcomputer.com/forums/t/576156/android-pop-uphijacker/)
+
+## Телеграм боты/группы
+
+Пример: @apkdl_bot, t.me/fun_android
+
+  Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вам приложение "на лету". Работает это так, вы вводите команду боту/в группу, что хотите скачать "Instagram". Скрипт на другой стороне скачивает его с Google Play, распаковывает, запихивает свой вредоносный код, запаковывает обратно и возвращает вам. Как это делать, я попытаюсь рассказать в ближайшем будущем.
+
+## Сторонние сайты-посредники
+ 
+ Пример: apkpure.com, apkmirror.com
+ Тоже самое, что и с телеграм ботами/группами, только добавляется возможность загрузить свое приложение на такой сайт. Как например на этом [сайте](https://www.apkmirror.com/#uploadAPK):
+ 
+ ![img](/assets/images/apkmirror_submit.png)
+ 
   Гораздо печальнее, что на такие стороние источники приложений, можно закачать свою apk (фото ApkMirrorSubmitApk) https://www.apkmirror.com/faq/#uploadAPK
   
   Написать про разграничение разрешений в новом андроиде. И почему read external storage это нормально. А на internet отдельно запрашивать не надо. Разрешения для приложений это очень тонкий вопрос. Запретив точное отслеживание геолокации мы потеряем сотни фитес приложений. 
