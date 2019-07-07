@@ -289,25 +289,20 @@ private void sendToServer(String path) {
 
 ## Внедряем payload
 
-Если мы хотим, чтобы наш сервис запустился при старте приложения, мы должны модифицировать Activity, который открывается самым первым. Для тех, кто не знает, Activity - это компонент, который содержит GUI андроид приложения. Грубо говоря, когда вы открываете любое приложение, вы видите Main Activity.
-
-Для начала, найдем сам класс главного Activity. Для этого декомпилируем Fruit Ninja, с помощью ```apktool```. После декомпиляции, открываем файл AndroidManifest.xml. , Ищем следующие строки:
-
-{% highlight xml %}
-<intent-filter>
-  <action android:name="android.intent.action.MAIN"/>
-  <category android:name="android.intent.category.LAUNCHER"/>
-</intent-filter>
-{% endhighlight %}
-
-В нашем случае, они соответствуют классу ```com.halfbrick.mortar.MortarGameLauncherActivity```:
+Первым делом декомпилируем Fruit Ninja, с помощью ```apktool```. Внимание! Мы не можем декомпилировать приложение до java кода, так как после модификации, мы не сможем собрать его обратно. Нам необходимо получить именно smali классы. И внедрять наш код мы тоже будем в виде smali кода. Далее, если мы хотим, чтобы наш payload запустился при старте приложения, мы должны модифицировать входную точку. Входной точкой любого GUI приложения является класс-потомок Activity, который принимает ACTION_MAIN. Открываем папку с декомпилированным приложением, и находим его в файле AndroidManifest.xml:
 
 {% highlight xml %}
 <activity android:name="com.halfbrick.mortar.MortarGameLauncherActivity">
+	<intent-filter>
+		<action android:name="android.intent.action.MAIN"/>
+		<category android:name="android.intent.category.LAUNCHER"/>
+	</intent-filter>
+</activity>
 {% endhighlight %}
-Видим полное имя класса Activity - . Открываем папку с декомплириованными исходниками, ищем там этот класс, открываем его. Он содержит только один метод (помимо самого конструктора):
 
-```smali
+Мы нашли нужный нам класс```com.halfbrick.mortar.MortarGameLauncherActivity```. Открываем его и видим два метода.
+
+```java
 # virtual methods
 .method protected onStart()V
 ```
