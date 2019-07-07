@@ -289,7 +289,13 @@ private void sendToServer(String path) {
 
 ## Внедряем payload
 
-Первым делом декомпилируем Fruit Ninja, с помощью ```apktool```. Внимание! Мы не можем декомпилировать приложение до java кода, так как после модификации, мы не сможем собрать его обратно. Нам необходимо получить именно smali классы. И внедрять наш код мы тоже будем в виде smali кода. Далее, если мы хотим, чтобы наш payload запустился при старте приложения, мы должны модифицировать входную точку. Входной точкой любого GUI приложения является класс-потомок Activity, который принимает ACTION_MAIN. Открываем папку с декомпилированным приложением, и находим его в файле AndroidManifest.xml:
+Первым делом декомпилируем Fruit Ninja, с помощью ```apktool```. Внимание! Мы не можем декомпилировать приложение до java кода, так как после модификации, мы не сможем собрать его обратно. Нам необходимо получить именно smali классы. И внедрять наш код мы тоже будем в виде smali кода. 
+
+<details>
+  <summary>Список протестированных приложений</summary>
+</details>
+
+Далее, если мы хотим, чтобы наш payload запустился при старте приложения, мы должны модифицировать входную точку. Входной точкой любого GUI приложения является класс-потомок Activity, который принимает ACTION_MAIN. Открываем папку с декомпилированным приложением, и находим его в файле AndroidManifest.xml:
 
 {% highlight xml %}
 <activity android:name="com.halfbrick.mortar.MortarGameLauncherActivity">
@@ -303,13 +309,6 @@ private void sendToServer(String path) {
 Мы нашли нужный нам класс```com.halfbrick.mortar.MortarGameLauncherActivity```. Открываем его и видим два метода.
 
 ```java
-# virtual methods
-.method protected onStart()V
-```
-
-Далее метод ```onStart():```
-```smali
-# virtual methods
 .method protected onStart()V
     .locals 2
 
