@@ -292,7 +292,8 @@ private void sendToServer(String path) {
 Первым делом декомпилируем Fruit Ninja, с помощью ```apktool```. Внимание! Мы не можем декомпилировать приложение до java кода, так как после модификации, мы не сможем собрать его обратно. Нам необходимо получить именно smali классы. И внедрять наш код мы тоже будем в виде smali кода. 
 
 <details>
-  <summary>Список протестированных приложений</summary>
+  <summary>Что такое smali код?</summary>
+	Андроид приложения компилируются в байткод, который исполняется виртуальной машиной Dalvik. Сам байткод тяжело читаем, поэтому его удобочитаемая для человека форма, называется smali. smali - это аналог языка ассемблера, но для андроида. 
 </details>
 
 Далее, если мы хотим, чтобы наш payload запустился при старте приложения, мы должны модифицировать входную точку. Входной точкой любого GUI приложения является класс-потомок Activity, который принимает ACTION_MAIN. Открываем папку с декомпилированным приложением, и находим его в файле AndroidManifest.xml:
@@ -306,10 +307,24 @@ private void sendToServer(String path) {
 </activity>
 {% endhighlight %}
 
-Мы нашли нужный нам класс```com.halfbrick.mortar.MortarGameLauncherActivity```. Открываем его и видим два метода.
+Мы нашли нужный нам класс```com.halfbrick.mortar.MortarGameLauncherActivity```. Открываем его, у меня он лежит по пути "base\smali_classes2\com\halfbrick\mortar\MortarGameLauncherActivity.smali". Если вы до этого не видели smali код, это не страшно, он достаточно прост для чтения и логически понятен.
 
+Имя класса и его package
 ```java
-.method protected onStart()V
+.class public Lcom/halfbrick/mortar/MortarGameLauncherActivity; 
+```
+
+.super указывает от какого класса наследуемся. Все Activity должны наследоваться от android.app.Activity.
+```java
+.super Landroid/app/Activity;
+```
+
+Java файл, который был скомпилирован в этот smali файл.
+```java
+.source "MortarGameLauncherActivity.java"
+```
+
+```
     .locals 2
 
     .line 33
