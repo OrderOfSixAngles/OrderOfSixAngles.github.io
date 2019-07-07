@@ -313,7 +313,7 @@ private void sendToServer(String path) {
 
 [Источник](https://developer.android.com/reference/android/app/Activity)
 
-Открываем Activity, у меня он лежит по пути "base\smali_classes2\com\halfbrick\mortar\MortarGameLauncherActivity.smali". Если вы до этого не видели smali код, это не страшно, он достаточно прост для **чтения** и логически понятен. 
+Открываем Activity, у меня он лежит по пути "base\smali_classes2\com\halfbrick\mortar\MortarGameLauncherActivity.smali". Если вы до этого не видели smali код, это не страшно, он достаточно прост для **чтения** и логически понятен.
 
 ```java
 .class public Lcom/halfbrick/mortar/MortarGameLauncherActivity;
@@ -325,50 +325,52 @@ private void sendToServer(String path) {
 .source "MortarGameLauncherActivity.java"
 // Исходный Java файл.
 
-# direct methods
 .method public constructor <init>()V
-/* Ключевые слова говорят сами за себя - это конструктор класса. 
-Самая последняя буква, в определении метода, в smali, является типом возвращаемого значения.
-В данном случае, V - void */
+/* Ключевые слова говорят сами за себя - это конструктор класса. Самая последняя буква, в определении метода, в smali, является 
+типом возвращаемого значения. В данном случае, V - void */
 
     .locals 0
+/* Виртуальная машина Dalvik не использует стек, вместо этого используются регистры. Регистры это просто ячейки, которые
+могут хранить любые типы данных. Каждая функция имеет свой личный набор регистров. Через них передаются параметры вызываемым функциям. 
+В зависимости от инструкции, доступных регистров может быть 16, 256 или 64К. Регистры делятся на локальные регистры и регистры, для аргументов. В локальные регистры можно класть локальные переменные. В регистры для аргументов, кладут входные параметры функций. .locals 0 - означает, что в методе 0 локальных регистров. К локальным регистрам обращаются, как v0, v1, v2, v3, ... В аргументным регистрам - p0, p1, p2, p3. 
+*/
 
     .line 28
     invoke-direct {p0}, Landroid/app/Activity;-><init>()V
-
+/* invoke-подобные инструкции  используются для вызова функций. invoke-direct - вызов нестатической функции, которую нельзя переопределить. Функции, которые нельзя переопределить в java - private и конструкторы. Если функцию можно переопределить, то соответственно будет произведен поиск по таблице, содержащей переопределенния метода.  В квадратных скобках указываются входные параметры функции. p0 - по умолчанию означает this в java. init говорит о том, что здесь вызывается родительский конструктор.
+*/
     return-void
+// ничего не возвращаем
 .end method
+// истиное лицо закрывающей скобки
 
-
-# virtual methods
 .method protected onStart()V
     .locals 2
-Инструкция *invoke-super* - вызов *onStart()* родительского класса (супер класса). Виртуальная машина Dalvik не использует стек, вместо этого используются регистры. Каждая функция имеет свой набор регистров. Через них передаются параметры функциям. 
-
-В скобках содержится параметр p0. Когда мы вызываем любой не-статический метод, 
-
-# p0 means parameter 0
- # p0, in this case, is like "this" from a java class.
- # we are calling the constructor of our mother class.
- # what would p1 be?
+    
     .line 33
     invoke-super {p0}, Landroid/app/Activity;->onStart()V
+// Вызываем onStart() родительского класса
 
     .line 35
     invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->isTaskRoot()Z
+/* invoke-virtual - вызов виртуального метода. Виртуальный метод может быть переопределен, а значит не является static, private, final или конструктором. Класс MortarGameLauncherActivity не имеет метода isTaskRoot(), а значит он вызывается в родительском классе Activity. p0 тут опять же, является аналогом this. Последняя буква, как мы уже знаем это тип возвращаемого значения. В данном случае Z - boolean */
 
     move-result v0
+/* Кладем результат функции isTaskRoot() в регистр v0. isTaskRoot() возвращает true, если данное Activity является первым, которое открывается при запуске приложения */
 
     if-nez v0, :cond_0
+// Если v0 = true, то переходим по метке cond_0 (аналог goto). Если v0 = false, продолжаем выполнение 
 
     .line 37
     invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameLauncherActivity;->finish()V
+// finish() закрывает Activity
 
     return-void
 
     .line 41
     :cond_0
     new-instance v0, Landroid/content/Intent;
+// Создаем объект Intent и кладем ссылку на него в регистра v0
 
     const-class v1, Lcom/halfbrick/mortar/MortarGameActivity;
 
