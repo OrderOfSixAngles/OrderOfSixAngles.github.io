@@ -467,7 +467,7 @@ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg R
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
 ```
 
-Теперь все готово. [Исходники тут](https://github.com/OrderOfSixAngles/ExternalStorageStealer). Видеодемонстрация, как все работает тут:
+All rea [Sour he](https://github.com/OrderOfSixAngles/ExternalStorageStealer). Videodemostrati:
 
 []("https://youtu.be/e5w5taMY8MA")
 
