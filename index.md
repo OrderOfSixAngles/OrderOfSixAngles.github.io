@@ -468,7 +468,9 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.
 ```
 
 Теперь все готово. [Исходники тут](https://github.com/OrderOfSixAngles/ExternalStorageStealer). Видеодемонстрация, как все работает тут:
-https://youtu.be/e5w5taMY8MA
-https://youtu.be/iBCX_A5FBVU
+
+[]("https://youtu.be/e5w5taMY8MA")
+
+[]("https://youtu.be/iBCX_A5FBVU")
 
 
