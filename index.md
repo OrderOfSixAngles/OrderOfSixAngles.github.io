@@ -1,4 +1,5 @@
-![image](/assets/images/main_logo.png=100x200)
+
+<img src="/assets/images/main_logo.png" width="400" height="500" />
 
 # About
   Данный текст разделен на три части. Они не связанны между собой, за исключением того, что все они относятся к андроид приложениям.
