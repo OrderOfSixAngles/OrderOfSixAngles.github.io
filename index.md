@@ -6,9 +6,10 @@
 ## Intro
   
   В данном тексте будет описано:
+  
   1. Как злоумышленники модифицируют легитимные андроид приложения, внедряя туда вредоносный код. 
   2. Как такие приложения распостраняются. 
-  3. Как вредоносный код может использовать вектор атаки *Man-In-The-Disk*. 
+  3. Использование *Man-In-The-Disk*, для кражи файла с ЭЦП. 
   4. Как важно относится к разрешениям, которые вы даете приложениям на телефоне. 
   5. Как выявить вредоносные модификации.
   
@@ -90,7 +91,7 @@
   
 ### Google play
  
- Официальный источник приложений имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от фитнес приложения для бега? Исследователи каждый месяц [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) приложения, опубликованные в Google Play.
+ Официальный источник приложений имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от фитнес приложения для бега? Исследователи [постоянно](https://news.drweb.ru/show/?i=13349&lng=ru) [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) [приложения](https://www.vice.com/en_us/article/43z93g/hackers-hid-android-malware-in-google-play-store-exodus-esurv), опубликованные в Google Play.
   
   Обычно малварь называет себя *google play services* или схожим образом и ([ставит такую же иконку](https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone)) . Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. Однажды в телеграме, я поставил аватарку с бумажным самолетиком и меня заблокировали. Еще один способ, используемый для публикации в Google Play, состоит в создании схожего имени, с заменой буквы "L" на "I", "g" на "q" и т.д:
   
@@ -115,15 +116,22 @@
 А [Здесь](https://thehackernews.com/2016/11/hacking-android-smartphone.html) спалились китайцы. Цитата:
   
 > Besides sniffing SMS message content, contact lists, call logs, location data and other personal user information and automatically sending them to AdUps every 72 hours, AdUps' software also has the capability to remotely install and update applications on a smartphone.
+
+6. По решению суда, в некоторых странах.https://en.wikipedia.org/wiki/Cellphone_surveillance
+
+7. Полицией и спецслужбами, без решения суда.
+https://www.dailydot.com/layer8/police-surveillance/
+https://www.npr.org/2017/11/28/564713772/can-police-track-you-through-your-cellphone-without-a-warrant
+
 ### Вывод
 
-Теперь мы поняли, что наше зараженное приложение может попасть на телефон пользователя множеством способов. Теперь о способе атаки, для получения ЭЦП. 
+Как видите, существует огромное количество способов доставки вредоносных приложений. 
 
 ### Man-In-The-Disk
 
-Проблема стара как мир. Общественность обратила на нее внимание, после этой [статьи](https://blog.checkpoint.com/2018/08/12/man-in-the-disk-a-new-attack-surface-for-android-apps/). Советую, для начала, ее прочитать.
+Общественность обратила внимание на данный вектор атаки, после этой [статьи](https://blog.checkpoint.com/2018/08/12/man-in-the-disk-a-new-attack-surface-for-android-apps/). Советую, для начала, ее прочитать.
 
-*Для тех кто прочитал статью выше. В исследовании не развили мысль о том, что эти файлы обрабатываются простыми библиотеками, в которых можно найти уязвимость и скрафтить такие файлы, которые ее проэксплуатируют.*
+*Для тех кто прочитал - в исследовании не развили мысль о том, что эти файлы обрабатываются библиотеками, в которых можно найти уязвимость и скрафтить такие файлы, которые ее проэксплуатируют.*
 
 Кто не прочитал, расскажу в кратце. Для начала, определимся с понятиями. В андроиде память разделяется на Internal Storage и External Storage. Internal storage - это внутренняя память приложения, доступная только ему и никому больше. Абсолютно каждому приложению на телефоне соответствует отдельный пользователь и отдельная папка с правами только для этого пользователя. Это отличный защитный механизм. External storage - основная память телефона, доступная всем приложениям (сюда же относится SD карта). Зачем она нужна? Возьмем приложение фоторедактор. После редактирования, вы должны сохранить фото, чтобы оно было доступно из галереи. Естественно, что если вы положите его в internal storage, то никому, кроме вашего приложения оно доступно не будет. Или бразуер, который скачивает все файлы в общую папку Downloads.
 
