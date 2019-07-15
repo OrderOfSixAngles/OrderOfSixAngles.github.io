@@ -123,6 +123,12 @@
 https://www.dailydot.com/layer8/police-surveillance/
 https://www.npr.org/2017/11/28/564713772/can-police-track-you-through-your-cellphone-without-a-warrant
 
+8. Через другие девайсы в вашей сети. Приложение может быть червем, который распостраняется по сети. 
+
+9. Вы пришли в гости к другу, а его телевизор заразил ваш телефон
+http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/.
+The particular version appearing on Fire TV devices installs itself as an app called “Test” with the package name “com.google.time.timer”. Once it infects an Android device, it begins to use the device’s resources to mine cryptocurrencies and attempts to spread itself to other Android devices on the same network.
+
 ### Вывод
 
 Как видите, существует огромное количество способов доставки вредоносных приложений. 
