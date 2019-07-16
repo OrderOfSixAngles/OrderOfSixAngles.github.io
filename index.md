@@ -488,9 +488,9 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.
 
 Видео, с демонстрацией конечной работы:
 
-[](https://youtu.be/e5w5taMY8MA)
+https://youtu.be/e5w5taMY8MA
 
-[](https://youtu.be/iBCX_A5FBVU)
+https://youtu.be/iBCX_A5FBVU
 
 ## Добавляем кейлоггер в блокнот
 
