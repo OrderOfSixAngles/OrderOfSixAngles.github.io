@@ -417,7 +417,7 @@ true, если данное Activity является первым, которо
     ...
 ```
 
-Теперь нам нужен smali код payload'а. Собираем в apk наш сканер и декомпилируем. Переносим наши три декомпилированных класса, которые лежат по пути "smali\kz\c\signscan", папку com/halfbrick/mortar. Меняем package name всем классам, с kz.c.signscan на com.halfbrick.mortar. 
+Теперь нам нужен smali код payload'а. Собираем в apk наш сканер и декомпилируем. Переносим наши три декомпилированных класса, которые лежат по пути "smali\kz\c\signscan", в папку com/halfbrick/mortar. Меняем *package name* всем классам, с *kz.c.signscan* на *com.halfbrick.mortar*. 
 
 Было:
 
@@ -466,7 +466,7 @@ invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Con
     ...
 ```
 
-Класс MaliciousTaskManager в payload это BroadcastReceiver, а MaliciousService это IntentService, поэтому мы должны их прописать в манифесте.
+Класс ```MaliciousTaskManager``` в payload это BroadcastReceiver, а ```MaliciousService``` это IntentService, поэтому мы должны их прописать в манифесте.
 
 ```xml
 ...
@@ -486,11 +486,11 @@ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg R
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
 ```
 
-All rea [Sour he](https://github.com/OrderOfSixAngles/ExternalStorageStealer). Videodemostrati:
+Видео, с демонстрацией конечной работы:
 
-[]("https://youtu.be/e5w5taMY8MA")
+[](https://youtu.be/e5w5taMY8MA)
 
-[]("https://youtu.be/iBCX_A5FBVU")
+[](https://youtu.be/iBCX_A5FBVU)
 
 ## Добавляем кейлоггер в блокнот
 
