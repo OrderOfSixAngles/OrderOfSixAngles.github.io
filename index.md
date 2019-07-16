@@ -1,23 +1,12 @@
+## Воруем ЭЦП, используя Man-In-The-Disk / Кейлоггер в блокноте
 
-![img](/assets/images/main_logo.png)
-  
-# Вредоносный андроид
+### Intro
 
-## Intro
-  
-  В данном тексте будет описано:
-  
-  1. Как злоумышленники модифицируют легитимные андроид приложения, внедряя туда вредоносный код. 
-  2. Как такие приложения распостраняются. 
-  3. Как злоумышленник может использовать атаку *Man-In-The-Disk*, для кражи файла с ЭЦП. 
-  4. Как важно относится к разрешениям, которые вы даете приложениям на телефоне. 
-  5. Как выявить вредоносные модификации.
-  
-  Будет использован пример с внедрением кода в популярное приложение [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree), который сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер. В начале разберемся, каким образом такое модифицированное приложение может оказаться у конечного пользователя.
-  
-## Как вредоносные приложения попадают на телефон
+Казахстанские мобильные приложения [mEGOV](https://play.google.com/store/apps/details?id=kz.nitec.egov.mgov) и [ЕНПФ](https://play.google.com/store/apps/details?id=kz.enpf.mobile) используют ЭЦП, как один из способов авторизации. Чтобы авторизоваться этим способом, вам необходимо перенести файл с ЭЦП на телефон. Такой метод авторизации уязвим перед атакой Man-In-The-Disk (о ней в подробностях ниже). Чтобы стать жертвой атаки, вам достаточно установить любое ваше любимое приложение, которые было сркытно модифицировано злоумышленником. В качестве доказательства, я наглядно покажу, как это может быть сделано. Так же, в виде бонуса, я расскажу, как установив простое приложение блокнот, вы можете получить кейлоггер. Но для начала...
+
+### Как вредоносные приложения попадают на телефон
  
-### Локальные маркеты приложений Китая, Ирана и т.д
+1. Локальные маркеты приложений Китая, Ирана и т.д
  
   Примеры: cafebazaar.ir, android.myapp.com, apkplz.net
   
@@ -53,35 +42,35 @@
   Локальные приложения, используемые в рамках одного региона/страны, часто используют одни и те же SDK (набор библиотек) для рекламного трекинга, интеграции соц. сетей и т.д.. Если одна и та же библиотека используется в нескольких приложениях, то с большой вероятностью, некоторые из этих приложений, могут быть установлены у одного пользователя. Такие библиотеки могут использовать возможности разных приложений, в которые они встроены, для кражи данных пользователя, в обход выданных разрешений. Например, одно приложение имеет доступ к получению IMEI, но не имеет доступа к интернету. Встроенная библиотека знает об этом и поэтому считывает IMEI и сохраняет его на SD карте в скрытой папке. Та же библиотека встроенная в другое приложение, у которого есть доступ в интернет, но нету доступа к IMEI, считывает его со скрытой папки и отправляет на свой сервер. Данный способ использовался двумя китайскими компаниями Baidu и Salmonads ([Источник](https://www.ftc.gov/system/files/documents/public_events/1415032/privacycon2019_serge_egelman.pdf)). 
   
 ### Фишинг
-Классический фишинг, является основным инструментом международных группировок и спецслужб разных стран.
 
-только вместо загрузки непонятных скриптов или файлов, пользователю предлагают обновить WhatsApp, установить новый улучшенный Instagram, установить антивирус и т.д. Примеры:
+Классический фишинг, является основным инструментом международных группировок и спецслужб разных стран. Как это часто бывает, берется обычное приложение мессенджер, в него добавляется функционал для слежения, а потом оно массово рассылается, с пометкой "Посмотри, какое крутое приложение для общения". Доставка пользователям может осуществляется через соц. сети, спам Whatsapp/Telegram, встроенная реклама на сайтах и т.д..
+
+![](/assets/images/dark_caracal_phishing.png)
+[Источник, стр 19.](https://info.lookout.com/rs/051-ESQ-475/images/Lookout_Dark-Caracal_srr_20180118_us_v.1.0.pdf)
+
+Фишинговые ссылки, в виде постов в фейсбуке:
+
+![](/assets/images/dark_caracal_phishing_2.png)
+
+[Источник, стр. 22](https://info.lookout.com/rs/051-ESQ-475/images/Lookout_Dark-Caracal_srr_20180118_us_v.1.0.pdf)
+
+Всплывающее окно на одном известном сайте
 
 ![img](/assets/images/whatsapp_fishing.png)
 
 [Источник](https://xakep.ru/2017/01/27/mobile-phishing/)
 
-![img](/assets/images/fishing_2.jpg)
-
-[Источник](https://android.stackexchange.com/questions/106899/what-should-i-do-about-this-pop-up-on-my-android-device)
-
-> I then open CHROME BROWSER and type: www.XXXXXXXX.com - within a few seconds I get a popup with this: 
-
-![img](/assets/images/fishing_3.png)
-
-[Источник](https://www.bleepingcomputer.com/forums/t/576156/android-pop-uphijacker/)
-
 ### Телеграм боты/группы
 
 Пример: @apkdl_bot, t.me/fun_android
 
-  Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вами приложение "на лету". Работает это так - вы вводите команду боту/в группу, что хотите скачать "Instagram". Скрипт на другой стороне скачивает его с Google Play, распаковывает, запихивает свой вредоносный код, запаковывает обратно и возвращает вам. Как это делать автоматически, я попытаюсь рассказать в ближайшем будущем.
+  Существуют телеграм боты, для скачивания apk файлов. Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вами приложение "на лету". Работает это так - вы вводите команду боту/в группу, что хотите скачать "Instagram". Скрипт на другой стороне скачивает его с Google Play, распаковывает, добавляет вредоносный код, запаковывает обратно и возвращает вам. Как это делается автоматически, я попытаюсь показать на примере в ближайшем будущем.
 
 ### Сторонние сайты-посредники
  
  Пример: apkpure.com, apkmirror.com, apps.evozi.com/apk-downloader/
  
- Тоже самое, что и с телеграм ботами/группами, только добавляется возможность загрузить свое приложение на такой сайт. Это в свою очередь только увеличивает вероятность установить вредоносное приложение. Пример загрузки на [этом сайте](https://www.apkmirror.com/#uploadAPK):
+ Существует огромное количество неофициальных сайтов, для скачивания андроид приложений. Некоторые из них предоставляют возможность загрузить свое приложение, которое может быть вредоносным. Пример загрузки на [этом сайте](https://www.apkmirror.com/#uploadAPK):
  
  ![img](/assets/images/apkmirror_submit.png)
    
@@ -90,14 +79,18 @@
   ![img](/assets/images/how_ghost_push_work.jpg)
   
   Примерную статистику, для неофициальных источников, можно найти в [Android Security Report 2018](https://source.android.com/security/reports/Google_Android_Security_2018_Report_Final.pdf) - 1.6 миллиардов заблокированных Google Play Protect установок не из Google Play. Всего установок было гораздо больше.
-  Некоторые даже пишут статьи (https://www.makeuseof.com/tag/using-android-without-google/), как это хорошо, пользоваться сторонними маркетами. 
-  Могут использоваться, для скачивания платных игр бесплатно.Ad-free версии приложений (https://apk4free.net/mx-player-pro/). Рискнете поставить такое? Сделать на этом сайте скрины https://apk4free.net/, с ad free.https://onhax.me/, https://www.mundoperfecto.net/?utm_campaign=free-traffic&utm_source=solutions-softonic-com&utm_medium=referral
+  Некоторые даже пишут [статьи](https://www.makeuseof.com/tag/using-android-without-google/), как это хорошо, пользоваться сторонними маркетами. 
+  Отдельный целый мир составляют сайты, которые распостраняют приложения без рекламы, взломанные платные приложения бесплатно, приложения с дополнительным функционалом. 
+  
+  ![](/assets/images/mx_player_patched.png)
+  
+  ![](/assets/images/ccleaner_cracked.png)
+  
 ### Google play
  
- Официальный источник приложений имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от фитнес приложения для бега? Исследователи [постоянно](https://news.drweb.ru/show/?i=13349&lng=ru) [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) [приложения](https://www.vice.com/en_us/article/43z93g/hackers-hid-android-malware-in-google-play-store-exodus-esurv), опубликованные в Google Play.
+ Официальный источник имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от приложения для бега? Исследователи [постоянно](https://news.drweb.ru/show/?i=13349&lng=ru) [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) [приложения](https://www.vice.com/en_us/article/43z93g/hackers-hid-android-malware-in-google-play-store-exodus-esurv), опубликованные в Google Play.
   
-  Обычно малварь называет себя *google play services* или схожим образом и ([ставит такую же иконку](https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone)) . Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. Однажды в телеграме, я поставил аватарку с бумажным самолетиком и меня заблокировали. Еще один способ, используемый для публикации в Google Play, состоит в создании схожего имени, с заменой буквы "L" на "I", "g" на "q" и т.д:
-  
+  Обычно вредоносное приложение называет себя *google play services* или схожим образом и ([ставит такую же иконку](https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone)). Это вводит в заблуждение пользователей. Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. Однажды в телеграме, я поставил аватарку с бумажным самолетиком и меня заблокировали. Еще один способ, используемый для публикации в Google Play, состоит в создании схожего имени, с заменой буквы "L" на "I", "g" на "q" и т.д:
   
   ![image](/assets/images/spoil_name.png) 
   
@@ -107,7 +100,7 @@
 
 ### Другие способы
 
-1. [Установка малвари в сервисах починки телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/)
+1. [В сервисах ремонта телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/)
 
 2. [При пересечении границы](https://www.theguardian.com/world/2019/jul/02/chinese-border-guards-surveillance-app-tourists-phones)
 
@@ -115,38 +108,31 @@
 
 4. Получение злоумышленником доступа к вашему гугл аккаунту, и установка приложения на телефон через Google Play. 
 
-5. Предустановленные приложения
-А [Здесь](https://thehackernews.com/2016/11/hacking-android-smartphone.html) спалились китайцы. Цитата:
-  
-> Besides sniffing SMS message content, contact lists, call logs, location data and other personal user information and automatically sending them to AdUps every 72 hours, AdUps' software also has the capability to remotely install and update applications on a smartphone.
+5. [Предустановленные приложения](https://thehackernews.com/2016/11/hacking-android-smartphone.html)
 
-6. По решению суда, в некоторых странах.https://en.wikipedia.org/wiki/Cellphone_surveillance
+6. [По решению суда и без. Полицией или спецслужбами](https://security.stackexchange.com/questions/194353/police-forcing-me-to-install-jingwang-spyware-app-how-to-minimize-impact)
 
-7. Полицией и спецслужбами, без решения суда.
-https://www.dailydot.com/layer8/police-surveillance/
-https://www.npr.org/2017/11/28/564713772/can-police-track-you-through-your-cellphone-without-a-warrant
+7. Вы пришли в гости к другу, а его телевизор заразил ваш телефон
 
-8. Через другие девайсы в вашей сети. Приложение может быть червем, который распостраняется по сети. 
+> The particular version appearing on Fire TV devices installs itself as an app called “Test” with the package name “com.google.time.timer”. Once it infects an Android device, it begins to use the device’s resources to mine cryptocurrencies and attempts to spread itself to other Android devices on the same network.
 
-9. Вы пришли в гости к другу, а его телевизор заразил ваш телефон
-http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/.
-The particular version appearing on Fire TV devices installs itself as an app called “Test” with the package name “com.google.time.timer”. Once it infects an Android device, it begins to use the device’s resources to mine cryptocurrencies and attempts to spread itself to other Android devices on the same network.
+[Источник](http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/)
 
-### Вывод
+## Часть 1.  
 
-Как видите, существует огромное количество способов доставки вредоносных приложений. 
+Чтобы доказать реальность данной атаки, будет использован пример с внедрением кода в популярное приложение [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree), который сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер. 
 
-### Man-In-The-Disk
+### Что такое Man-In-The-Disk?
 
 Общественность обратила внимание на данный вектор атаки, после этой [статьи](https://blog.checkpoint.com/2018/08/12/man-in-the-disk-a-new-attack-surface-for-android-apps/). Советую, для начала, ее прочитать.
 
-*Для тех кто прочитал - в исследовании не развили мысль о том, что эти файлы обрабатываются библиотеками, в которых можно найти уязвимость и скрафтить такие файлы, которые ее проэксплуатируют.*
+*Для тех кто прочитал, добавлю от себя - модификация общих файлов других приложений, так же может привести к эксплуатации уязвимостей в библиотеках, которые используют эти файлы*
 
 Кто не прочитал, расскажу в кратце. Для начала, определимся с понятиями. В андроиде память разделяется на Internal Storage и External Storage. Internal storage - это внутренняя память приложения, доступная только ему и никому больше. Абсолютно каждому приложению на телефоне соответствует отдельный пользователь и отдельная папка с правами только для этого пользователя. Это отличный защитный механизм. External storage - основная память телефона, доступная всем приложениям (сюда же относится SD карта). Зачем она нужна? Возьмем приложение фоторедактор. После редактирования, вы должны сохранить фото, чтобы оно было доступно из галереи. Естественно, что если вы положите его в internal storage, то никому, кроме вашего приложения оно доступно не будет. Или бразуер, который скачивает все файлы в общую папку Downloads.
 
-У каждого андроид приложения есть свой набор разрешений, которые оно запрашивает. Но с ними все не так хорошо. Среди них есть такие, на которые люди охотно закрывают глаза и не относятся серъезно. Среди них - READ_EXTERNAL_STORAGE. Оно позволяет приложению получать доступ к основной памяти телефона, а значит и ко всем данным других приложений. Никто ведь не удивиться, если приложение "блокнот" запросит данное разрешение. Мало ли, вдруг оно там настройки хранит и кэш. Манипуляция данными других приложений в external storage и есть атака Man-In-The-Disk. Другое, почти дефолтное, разрешение - INTERNET. Как видно из названия, оно позволяет приложению иметь доступ в сеть. Самое печальное, что пользователю не показывается специальное окно с просьбой дать это разрешение. Вы просто прописываете его в своем приложении и всё. Именно два этих разрешения нужны для проведения нашей атаки.
+У каждого андроид приложения есть свой набор разрешений, которые оно запрашивает. Но с ними все не так хорошо. Среди них есть такие, на которые люди охотно закрывают глаза и не относятся серъезно. Среди них - READ_EXTERNAL_STORAGE. Оно позволяет приложению получать доступ к основной памяти телефона, а значит и ко всем данным других приложений. Никто ведь не удивиться, если приложение "блокнот" запросит данное разрешение. Мало ли, вдруг оно там настройки хранит и кэш. Манипуляция данными других приложений в external storage и есть атака Man-In-The-Disk. Другое, почти дефолтное, разрешение - INTERNET. Как видно из названия, оно позволяет приложению иметь доступ в сеть. Самое печальное, что пользователю не показывается специальное окно с просьбой дать это разрешение. Вы просто прописываете его в своем приложении.
 
-Я скачал топ-15 казахстанских приложений и написал [скрипт](https://github.com/OrderOfSixAngles/Android-permissions-chart), который выводит статистику запрашиваемых разрешений. Как видите, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE и INTERNET очень популярны. Значит мы можем  менее болезнено встраивать наш код в большинство приложений.
+Я скачал топ-15 казахстанских приложений и написал [скрипт](https://github.com/OrderOfSixAngles/Android-permissions-chart), который выводит статистику запрашиваемых разрешений. Как видите, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE и INTERNET очень популярны. Значит злоумышленники могут менее болезнено встраивать код в большинство приложений.
 
 <details>
   <summary>Список протестированных приложений</summary>
@@ -183,17 +169,21 @@ The particular version appearing on Fire TV devices installs itself as an app ca
 
 ![top-15-apps](/assets/images/permissions.png)
 
-  Небольшое отступление - если поставить whatsapp на рутованый телефон, то все ваши переписки хранятся в external storage незашифрованными. Видимо whatsapp не считает нужным даже использовать шифрование, на таком "порченом" телефоне. А на нерутованом, там лежит SSLSessionCache и переписки в зашифрованном виде, которые без труда можно расшифровать. Грубо говоря, практически любое приложение имеет доступ ко всем ваших сообщениям WhatsApp.   
+  Если вы пользуетесь Whatsapp, то все ваши сообщения хранятся в папке, доступной всем приложениям.
+  
+  ![](/assets/images/whatsapp_db.png)
+  
+  Грубо говоря, любое приложение на вашем телефоне может их скачать и отправить себе на сервер. А далее расшифровать с помощью любого доступного скрипта в сети. А если поставить whatsapp на рутованый телефон, то все ваши переписки хранятся в открытом виде. Видимо whatsapp не считает нужным даже использовать шифрование, на таком "порченом" телефоне. Так же, в external storage, whatsapp хранит SSLSessionCache (File-based cache of established SSL sessions). В будущем, попытаюсь исследовать, как можно использовать эти файлы, полученные с чужого телефона. 
+
+![](/assets/images/whatsapp_ssl.png)
 
 Google в курсе проблемы и [собирается изменить](https://developer.android.com/preview/privacy/scoped-storage?hl=ru) READ_EXTERNAL_STORAGE в Android Q. Цитата:
 
 > In order to access any other file that another app has created, including files in a "downloads" directory, your app must use the Storage Access Framework, which allows the user to select a specific file. 
 
-Теперь мы решили все вопросы с доставкой нашего зараженного приложения и то, какой вектор оно будет эксплуатировать. Этому приложению не требуется root.
+## Как злоумышленники модифицируют андроид приложения
 
-## Создаем payload
 
-Напомню: нам необходимо заразить игру Ninja Fruit своим кодом, который будет сканировать external storage, искать там ЭЦП и отсылать на сервер. Для этого, в начале, нам надо написать сам сканер. 
 
 Он состоит из трех основных классов: ```StageAttack```, ```MaliciousService```, ```MaliciousTaskManager```.
 
