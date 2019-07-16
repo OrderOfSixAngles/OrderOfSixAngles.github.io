@@ -60,13 +60,13 @@
 
 [Источник](https://xakep.ru/2017/01/27/mobile-phishing/)
 
-### Телеграм боты/группы
+3. Телеграм боты/группы
 
 Пример: @apkdl_bot, t.me/fun_android
 
   Существуют телеграм боты, для скачивания apk файлов. Вместо легитимного приложения, вам могут подсунуть вредоносное. Либо заразить запрашиваемое вами приложение "на лету". Работает это так - вы вводите команду боту/в группу, что хотите скачать "Instagram", скрипт на другой стороне скачивает его с Google Play, распаковывает, добавляет вредоносный код, запаковывает обратно и возвращает вам. Как это делается автоматически, я попытаюсь показать на примере в ближайшем будущем.
 
-### Сторонние сайты-посредники
+4. Сторонние сайты-посредники
  
  Пример: apkpure.com, apkmirror.com, apps.evozi.com/apk-downloader/
  
@@ -86,7 +86,7 @@
   
   ![](/assets/images/ccleaner_cracked.png)
   
-### Google play
+5. Google play
  
  Официальный источник имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от приложения для бега? Исследователи [постоянно](https://news.drweb.ru/show/?i=13349&lng=ru) [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) [приложения](https://www.vice.com/en_us/article/43z93g/hackers-hid-android-malware-in-google-play-store-exodus-esurv), опубликованные в Google Play.
   
@@ -95,32 +95,28 @@
   ![image](/assets/images/spoil_name.png) 
   
   [Источник](https://ti.360.net/blog/articles/stealjob-new-android-malware-used-by-donot-apt-group-en/). 
-  
-  Тем самым, вы по ошибке можете скачать не то приложение, которое хотели и оно в свою очередь, сворует все ваши контакты и поставит еще много чего вам на телефон. 
 
-### Другие способы
+5. Другие способы
 
-1. [В сервисах ремонта телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/)
+5.0. [В сервисах ремонта телефонов](https://www.thesun.co.uk/tech/4298260/smartphone-screen-repair-shops-could-let-spies-into-your-phone/)
 
-2. [При пересечении границы](https://www.theguardian.com/world/2019/jul/02/chinese-border-guards-surveillance-app-tourists-phones)
+5.1. [При пересечении границы](https://www.theguardian.com/world/2019/jul/02/chinese-border-guards-surveillance-app-tourists-phones)
 
-3. Подключение к незнакомому компьютеру по USB, с включенным режимом отладки. 
+5.2. Подключение к незнакомому компьютеру по USB, с включенным режимом отладки. 
 
-4. Получение злоумышленником доступа к вашему гугл аккаунту, и установка приложения на телефон через Google Play. 
+5.3. Получение злоумышленником доступа к вашему гугл аккаунту, и установки приложения на телефон через Google Play. 
 
-5. [Предустановленные приложения](https://thehackernews.com/2016/11/hacking-android-smartphone.html)
+5.4. [Предустановленные приложения](https://thehackernews.com/2016/11/hacking-android-smartphone.html)
 
-6. [По решению суда и без. Полицией или спецслужбами](https://security.stackexchange.com/questions/194353/police-forcing-me-to-install-jingwang-spyware-app-how-to-minimize-impact)
+5.5. [По решению суда и без. Полицией или спецслужбами](https://security.stackexchange.com/questions/194353/police-forcing-me-to-install-jingwang-spyware-app-how-to-minimize-impact)
 
-7. Вы пришли в гости к другу, а его телевизор заразил ваш телефон
+5.6. Вы пришли в гости к другу, а его [телевизор заразил ваш телефон](http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/)
 
 > The particular version appearing on Fire TV devices installs itself as an app called “Test” with the package name “com.google.time.timer”. Once it infects an Android device, it begins to use the device’s resources to mine cryptocurrencies and attempts to spread itself to other Android devices on the same network.
 
-[Источник](http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/)
+## Как злоумышленники заражают андроид приложения
 
-## Часть 1.  
-
-Чтобы доказать реальность данной атаки, будет использован пример с внедрением кода в популярное приложение [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree), который сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер. 
+Далее будет продемонстировано, как злоумышленник может модифицировать любое андроид приложение (которое попадет к вам вышеописанными методами). Будет использован пример с внедрением кода в популярное приложение [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree), который сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер. Но для начала...
 
 ### Что такое Man-In-The-Disk?
 
