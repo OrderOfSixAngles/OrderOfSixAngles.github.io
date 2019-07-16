@@ -483,4 +483,32 @@ All rea [Sour he](https://github.com/OrderOfSixAngles/ExternalStorageStealer). V
 
 []("https://youtu.be/iBCX_A5FBVU")
 
+## Добавляем кейлоггер в блокнот
 
+В этой части, мы напишем кейллогер и добавим его в [блокнот](https://play.google.com/store/apps/details?id=com.socialnmobile.dictapps.notepad.color.note). Для начала напишем кейлло
+
+
+Скачиваем приложение, декомпилируем. Открываем манифест, находим активити.
+
+```xml
+<activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" 
+	  
+	  android:label="@string/app_name" android:name="com.socialnmobile.colornote.activity.Main" 
+	  
+	  android:taskAffinity="colornote.task.main" android:theme="@style/Theme.NoTitle.Light" 
+	  
+	  android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.MONKEY"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.EDIT"/>
+                <action android:name="android.intent.action.PICK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="vnd.android.cursor.dir/vnd.socialnmobile.colornote.note"/>
+            </intent-filter>
+```
